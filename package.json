@@ -25,7 +25,6 @@
   "dependencies": {
     "@types/q": "0.0.32",
     "beautylog": "^6.0.0",
-    "dns-socket": "^1.4.2",
     "q": "^1.4.1",
     "typings-global": "^1.0.14"
   },
