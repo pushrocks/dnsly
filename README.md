@@ -24,7 +24,7 @@ import * as dnsly from 'dnsly'
 
 let myDnsly = new dnsly.Dnsly('google') // uses Google DNS Servers e.g 8.8.8.8
 myDnsly.getRecord('example.com','AAAA') // returns promise
-    .then(record: dnsly.I_AAAA => { // AAAA record for google.com, the I_AAAA will give you proper typings for the record return type
+    .then((record: dnsly.I_AAAA) => { // AAAA record for google.com, the I_AAAA will give you proper typings for the record return type
         // do something 
     })
 ```
