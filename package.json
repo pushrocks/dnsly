@@ -1,0 +1,37 @@
+{
+  "name": "dnsly",
+  "version": "1.0.0",
+  "description": "smart dns methods written in TypeScript",
+  "main": "dist/index.js",
+  "typings": "../dist/index.d.ts",
+  "scripts": {
+    "test": "(npmts)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/pushrocks/dnsly.git"
+  },
+  "keywords": [
+    "dns",
+    "google dns",
+    "dns record"
+  ],
+  "author": "Lossless GmbH",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/pushrocks/dnsly/issues"
+  },
+  "homepage": "https://gitlab.com/pushrocks/dnsly#README",
+  "dependencies": {
+    "@types/q": "0.0.32",
+    "beautylog": "^6.0.0",
+    "dns-socket": "^1.4.2",
+    "q": "^1.4.1",
+    "typings-global": "^1.0.14"
+  },
+  "devDependencies": {
+    "@types/should": "^8.1.30",
+    "should": "^11.1.1",
+    "typings-test": "^1.0.3"
+  }
+}
