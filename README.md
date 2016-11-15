@@ -18,8 +18,15 @@ smart dns methods written in TypeScript
 [![JavaScript Style Guide](https://img.shields.io/badge/code%20style-standard-brightgreen.svg)](http://standardjs.com/)
 
 ## Usage
-we recommend the use of TypeScript
+we recommend the use of TypeScript for optimal intellisense
 ```javascript
+import * as dnsly from 'dnsly'
 
+let myDnsly = new dnsly.Dnsly('google') // uses Google DNS Servers e.g 8.8.8.8
+myDnsly.getRecord('example.com','AAAA') // returns promise
+    .then(record => { // AAAA record for google.com
+        // do something 
+    })
 ```
+
 [![npm](https://push.rocks/assets/repo-header.svg)](https://push.rocks)
