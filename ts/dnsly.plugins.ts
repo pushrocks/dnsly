@@ -1,8 +1,8 @@
 import 'typings-global'
 import * as beautylog from 'beautylog'
-let dnsSocket = require('dns-socket')
+import * as dns from 'dns'
 
 export {
     beautylog,
-    dnsSocket
+    dns
 }

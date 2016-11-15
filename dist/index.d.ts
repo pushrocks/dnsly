@@ -8,7 +8,6 @@ export declare type TDnsRecordType = 'A' | 'AAAA' | 'CNAME' | 'PTR' | 'MX' | 'NA
 export declare class Dnsly {
     dnsServerIp: string;
     dnsServerPort: number;
-    dnsSocketInstance: any;
     /**
      * constructor for class dnsly
      */
@@ -17,10 +16,6 @@ export declare class Dnsly {
      * gets a record
      */
     getRecord(recordNameArg: string, recordTypeArg: TDnsRecordType): q.Promise<{}>;
-    /**
-     * close the dnsly instance
-     */
-    close(): void;
     /**
      * set the DNS provider
      */

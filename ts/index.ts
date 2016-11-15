@@ -19,13 +19,11 @@ export type TDnsRecordType = 'A'
 export class Dnsly {
     dnsServerIp: string
     dnsServerPort: number
-    dnsSocketInstance
     /**
      * constructor for class dnsly
      */
     constructor(dnsProviderArg: TDnsProvider) {
         this._setDnsProvider(dnsProviderArg)
-        this.dnsSocketInstance = plugins.dnsSocket()
     }
 
     /**
@@ -33,29 +31,13 @@ export class Dnsly {
      */
     getRecord(recordNameArg: string, recordTypeArg: TDnsRecordType) {
         let done = q.defer()
-        this.dnsSocketInstance.query(
-            {
-                questions: [{
-                    type: recordTypeArg,
-                    name: recordNameArg
-                }]
-            },
-            this.dnsServerPort,
-            this.dnsServerIp,
-            (err, res) => {
-                if (err) {
-                    done.reject(err)
-                }
-                done.resolve(res)
-            })
+        plugins.dns.resolve(recordNameArg,recordTypeArg, (err, addresses) => {
+            if (err) {
+                done.reject(err)
+            }
+            done.resolve(addresses)
+        })
         return done.promise
-    }
-
-    /**
-     * close the dnsly instance
-     */
-    close() {
-        this.dnsSocketInstance.destroy()
     }
 
     /**
@@ -65,6 +47,7 @@ export class Dnsly {
         if (dnsProvider === 'google') {
             this.dnsServerIp = '8.8.8.8'
             this.dnsServerPort = 53
+            plugins.dns.setServers(['8.8.8.8','8.8.4.4'])
         } else {
             throw new Error('unknown dns provider')
         }

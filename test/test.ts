@@ -22,7 +22,14 @@ describe('dnsly', function () {
 
     })
 
-    it('should close the instance', function () {
-        testDnsly.close()
+    it('should, get a mx record for a domain', function (done) {
+        testDnsly.getRecord('google.com', 'MX').then(res => {
+            console.log(res)
+            done()
+        }).catch(err => {
+            console.log(err)
+            done(err)
+        })
+
     })
 })
