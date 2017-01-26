@@ -1,6 +1,6 @@
 {
   "name": "dnsly",
-  "version": "1.0.7",
+  "version": "2.0.1",
   "description": "smart dns methods written in TypeScript",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
@@ -23,14 +23,13 @@
   },
   "homepage": "https://gitlab.com/pushrocks/dnsly#README",
   "dependencies": {
-    "@types/q": "0.0.32",
     "beautylog": "^6.0.0",
-    "q": "^1.4.1",
+    "smartdelay": "^1.0.1",
+    "smartq": "^1.0.4",
     "typings-global": "^1.0.14"
   },
   "devDependencies": {
-    "@types/should": "^8.1.30",
-    "should": "^11.1.2",
+    "smartchai": "^1.0.1",
     "typings-test": "^1.0.3"
   }
 }
