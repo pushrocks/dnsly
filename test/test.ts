@@ -55,4 +55,11 @@ describe('dnsly', function () {
         this.timeout(30000)
         return expect(testDnsly.checkUntilAvailable('dnsly_txt.bleu.de','TXT','sometext_txt2')).to.eventually.be.false
     })
+
+    it('should check until DNS is available an return false if it fails', function() {
+        this.timeout(30000)
+        return expect(
+            testDnsly.checkUntilAvailable('dnsly_txtNotThere.bleu.de','TXT','sometext_txt2')
+        ).to.eventually.be.false
+    })
 })

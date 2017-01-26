@@ -95,6 +95,7 @@ export class Dnsly {
         plugins.dns.resolveTxt(recordNameArg, (err, recordsArg) => {
             if (err) {
                 done.reject(err)
+                return
             }
             let responseArray: IDnsRecord[] = []
             for (let record of recordsArg) {
@@ -119,6 +120,7 @@ export class Dnsly {
         plugins.dns.resolve(recordNameArg, recordTypeArg, (err, recordsArg) => {
             if (err) {
                 done.reject(err)
+                return
             }
             let responseArray: IDnsRecord[] = []
             for (let record of recordsArg) {
