@@ -1,6 +1,6 @@
 {
   "name": "dnsly",
-  "version": "2.0.5",
+  "version": "2.0.6",
   "description": "smart dns methods written in TypeScript",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
