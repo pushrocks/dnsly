@@ -1,6 +1,6 @@
 import { expect, tap } from 'tapbundle'
 
-import * as dnsly from '../dist/index'
+import * as dnsly from '../ts/index'
 
 let testDnsly: dnsly.Dnsly
 
