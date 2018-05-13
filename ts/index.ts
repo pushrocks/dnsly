@@ -34,6 +34,13 @@ export class Smartdns {
     this._setDnsProvider(dnsProviderArg);
   }
 
+  /**
+   * check a dns record until it has propagated to Google DNS
+   * should be considerably fast
+   * @param recordNameArg 
+   * @param recordTypeArg 
+   * @param expectedValue 
+   */
   async checkUntilAvailable(
     recordNameArg: string,
     recordTypeArg: TDnsRecordType,
@@ -45,7 +52,7 @@ export class Smartdns {
         cycleArg++;
         try {
           let myRecordArray = await this.getRecord(recordNameArg, recordTypeArg);
-          let myRecord = myRecordArray[0].value;
+          let myRecord = myRecordArray[0].value[0];
           if (myRecord === expectedValue) {
             return true;
           } else {
