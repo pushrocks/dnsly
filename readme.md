@@ -25,6 +25,16 @@ smart dns methods written in TypeScript
 
 Use TypeScript for best in class instellisense.
 
+```typescript
+let myDnsly = new dnsly.Dnsly('google'); // uses Google DNS Servers e.g 8.8.8.8
+myDnsly
+  .getRecord('example.com', 'AAAA') // returns promise
+  .then((record: dnsly.I_AAAA) => {
+    // AAAA record for google.com, the I_AAAA will give you proper typings for the record return type
+    // do something
+  });
+```
+
 For further information read the linked docs at the top of this README.
 
 > MIT licensed | **&copy;** [Lossless GmbH](https://lossless.gmbh)
