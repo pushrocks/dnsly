@@ -5,7 +5,7 @@ import * as smartdns from '../ts/index';
 let testDnsly: smartdns.Smartdns;
 
 tap.test('should create an instance of Dnsly', async () => {
-  testDnsly = new smartdns.Smartdns('google');
+  testDnsly = new smartdns.Smartdns('cloudflare');
   expect(testDnsly).to.be.instanceOf(smartdns.Smartdns);
 });
 

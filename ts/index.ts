@@ -1,6 +1,6 @@
 import * as plugins from './dnsly.plugins';
 
-export type TDnsProvider = 'google';
+export type TDnsProvider = 'google' | 'cloudflare';
 export type TDnsRecordType =
   | 'A'
   | 'AAAA'
@@ -29,7 +29,7 @@ export class Smartdns {
   /**
    * constructor for class dnsly
    */
-  constructor(dnsProviderArg: TDnsProvider = 'google') {
+  constructor(dnsProviderArg: TDnsProvider = 'cloudflare') {
     this._setDnsProvider(dnsProviderArg);
   }
 
@@ -152,6 +152,10 @@ export class Smartdns {
       this.dnsServerIp = '8.8.8.8';
       this.dnsServerPort = 53;
       plugins.dns.setServers(['8.8.8.8', '8.8.4.4']);
+    } else if (dnsProvider === 'cloudflare') {
+      this.dnsServerIp = '1.1.1.1';
+      this.dnsServerPort = 53;
+      plugins.dns.setServers(['1.1.1.1', '1.0.0.1']);
     } else {
       throw new Error('unknown dns provider');
     }
