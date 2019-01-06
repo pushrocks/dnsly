@@ -1,4 +1,4 @@
-import { expect, tap } from 'tapbundle';
+import { expect, tap } from '@pushrocks/tapbundle';
 
 import * as smartdns from '../ts/index';
 
@@ -41,7 +41,7 @@ tap.test('should get a txt record', async () => {
 });
 
 tap.test('should, get a mx record for a domain', async () => {
-  let res = await testDnsly.getRecord('bleu.de', 'MX');
+  const res = await testDnsly.getRecord('bleu.de', 'MX');
   console.log(res);
 });
 

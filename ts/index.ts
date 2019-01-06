@@ -1,4 +1,3 @@
-import * as smartq from 'smartq';
 import * as plugins from './dnsly.plugins';
 
 export type TDnsProvider = 'google';
@@ -37,9 +36,9 @@ export class Smartdns {
   /**
    * check a dns record until it has propagated to Google DNS
    * should be considerably fast
-   * @param recordNameArg 
-   * @param recordTypeArg 
-   * @param expectedValue 
+   * @param recordNameArg
+   * @param recordTypeArg
+   * @param expectedValue
    */
   async checkUntilAvailable(
     recordNameArg: string,
@@ -56,11 +55,11 @@ export class Smartdns {
           if (myRecord === expectedValue) {
             return true;
           } else {
-            await plugins.smartdelay.delayFor(500);
+            await plugins.smartdelay.delayFor(2000);
             return await doCheck();
           }
         } catch (err) {
-          await plugins.smartdelay.delayFor(500);
+          await plugins.smartdelay.delayFor(2000);
           return await doCheck();
         }
       } else {
@@ -89,7 +88,7 @@ export class Smartdns {
    * gets a txt record
    */
   getRecordTxt(recordNameArg: string): Promise<IDnsRecord[]> {
-    let done = smartq.defer<IDnsRecord[]>();
+    let done = plugins.smartpromise.defer<IDnsRecord[]>();
     plugins.dns.resolveTxt(recordNameArg, (err, recordsArg) => {
       if (err) {
         done.reject(err);
@@ -114,7 +113,7 @@ export class Smartdns {
    * get oridinary record
    */
   getRecord(recordNameArg: string, recordTypeArg: TDnsRecordType): Promise<IDnsRecord[]> {
-    let done = smartq.defer<IDnsRecord[]>();
+    let done = plugins.smartpromise.defer<IDnsRecord[]>();
     plugins.dns.resolve(recordNameArg, recordTypeArg, (err, recordsArg) => {
       if (err) {
         done.reject(err);
@@ -134,7 +133,7 @@ export class Smartdns {
   }
 
   getNameServer(domainNameArg: string) {
-    const done = smartq.defer();
+    const done = plugins.smartpromise.defer();
     plugins.dns.resolveNs(domainNameArg, (err, result) => {
       if (!err) {
         done.resolve(result);

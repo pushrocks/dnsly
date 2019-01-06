@@ -3,10 +3,8 @@
     "compliance": "standard"
   },
   "npmci": {
-    "npmGlobalTools": [
-      "@gitzone/npmts",
-      "ts-node"
-    ],
-    "npmAccessLevel": "public"
+    "npmGlobalTools": [],
+    "npmAccessLevel": "public",
+    "npmRegistryUrl": "registry.npmjs.org"
   }
 }

@@ -1,12 +1,13 @@
 {
   "name": "@pushrocks/smartdns",
   "version": "3.0.4",
+  "private": false,
   "description": "smart dns methods written in TypeScript",
   "main": "dist/index.js",
   "typings": "dist/index.d.ts",
   "scripts": {
-    "test": "(ts-node -O '{\"lib\": [ \"es2015\" ]}' test/test.ts)",
-    "build": "(npmts)"
+    "test": "(tstest test/)",
+    "build": "(tsbuild)"
   },
   "repository": {
     "type": "git",
@@ -24,12 +25,15 @@
   },
   "homepage": "https://gitlab.com/pushrocks/dnsly#README",
   "dependencies": {
-    "beautylog": "^6.1.10",
-    "smartdelay": "^1.0.4",
-    "smartq": "^1.1.8"
+    "@pushrocks/smartdelay": "^2.0.2",
+    "@pushrocks/smartpromise": "^2.0.5"
   },
   "devDependencies": {
-    "@types/node": "^10.0.8",
-    "tapbundle": "^2.0.0"
+    "@gitzone/tsbuild": "^2.1.4",
+    "@gitzone/tstest": "^1.0.18",
+    "@pushrocks/tapbundle": "^3.0.7",
+    "@types/node": "^10.12.18",
+    "tslint": "^5.12.0",
+    "tslint-config-prettier": "^1.17.0"
   }
 }

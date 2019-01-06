@@ -1,5 +1,5 @@
-import * as beautylog from 'beautylog';
 import * as dns from 'dns';
-import * as smartdelay from 'smartdelay';
+import * as smartdelay from '@pushrocks/smartdelay';
+import * as smartpromise from '@pushrocks/smartpromise';
 
-export { beautylog, dns, smartdelay };
+export { dns, smartdelay, smartpromise };
