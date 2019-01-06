@@ -43,23 +43,25 @@ export class Smartdns {
   async checkUntilAvailable(
     recordNameArg: string,
     recordTypeArg: TDnsRecordType,
-    expectedValue: string
+    expectedValue: string,
+    cyclesArg: number = 50,
+    intervalArg: number = 500
   ) {
-    let cycleArg = 0;
+    let runCycles = 0;
     let doCheck = async () => {
-      if (cycleArg < 30) {
-        cycleArg++;
+      if (runCycles < cyclesArg) {
+        runCycles++;
         try {
           let myRecordArray = await this.getRecord(recordNameArg, recordTypeArg);
           let myRecord = myRecordArray[0].value[0];
           if (myRecord === expectedValue) {
             return true;
           } else {
-            await plugins.smartdelay.delayFor(2000);
+            await plugins.smartdelay.delayFor(intervalArg);
             return await doCheck();
           }
         } catch (err) {
-          await plugins.smartdelay.delayFor(2000);
+          await plugins.smartdelay.delayFor(intervalArg);
           return await doCheck();
         }
       } else {
