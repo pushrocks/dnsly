@@ -22,7 +22,7 @@ Use TypeScript for best in class instellisense.
 
 ```typescript
 const mySmartDns = new smartdns.SmartDns(); // uses Google DNS Https API
-const demoRecord = mySmartDns.getRecord('example.com', 'AAAA'); // returns promise
+const demoRecord = await mySmartDns.getRecord('example.com', 'AAAA'); // returns promise
 /*
 demoRecord looks like this:
 {
