@@ -1,6 +1,6 @@
 {
   "name": "@pushrocks/smartdns",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "private": false,
   "description": "smart dns methods written in TypeScript",
   "main": "dist/index.js",
