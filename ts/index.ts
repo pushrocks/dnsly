@@ -1,37 +1,43 @@
 import * as plugins from './dnsly.plugins';
 
 export type TDnsProvider = 'google' | 'cloudflare';
-export type TDnsRecordType =
-  | 'A'
-  | 'AAAA'
-  | 'CNAME'
-  | 'PTR'
-  | 'MX'
-  | 'NAPTR'
-  | 'NS'
-  | 'SOA'
-  | 'SRV'
-  | 'TXT';
 
-export interface IDnsRecord {
-  chunked?: string[];
-  name: string;
-  type: TDnsRecordType;
-  value: string;
+export interface ISmartDnsConstructorOptions {}
+
+export interface IGoogleDNSHTTPSResponse {
+  Status: number;
+  TC: boolean;
+  RD: boolean;
+  RA: boolean;
+  AD: boolean;
+  CD: boolean;
+  Question: Array< { name: string, type: number }>;
+  Answer: Array<
+    { name: string, type: number, TTL: number, data: string }
+  >,
+  Additional: [],
+  Comment: string
 }
 
 /**
  * class dnsly offers methods for working with dns from a dns provider like Google DNS
  */
 export class Smartdns {
-  dnsServerIp: string;
-  dnsServerPort: number;
+  public dnsServerIp: string;
+  public dnsServerPort: number;
+
+  public dnsTypeMap: {[key: string]: number} = {
+    A: 1,
+    AAAA: 28,
+    CNAME: 5,
+    MX: 15,
+    TXT: 16,
+  }
+
   /**
    * constructor for class dnsly
    */
-  constructor(dnsProviderArg: TDnsProvider = 'cloudflare') {
-    this._setDnsProvider(dnsProviderArg);
-  }
+  constructor(optionsArg: ISmartDnsConstructorOptions) {}
 
   /**
    * check a dns record until it has propagated to Google DNS
@@ -40,20 +46,20 @@ export class Smartdns {
    * @param recordTypeArg
    * @param expectedValue
    */
-  async checkUntilAvailable(
+  public async checkUntilAvailable(
     recordNameArg: string,
-    recordTypeArg: TDnsRecordType,
+    recordTypeArg: plugins.tsclass.network.TDnsRecordType,
     expectedValue: string,
     cyclesArg: number = 50,
     intervalArg: number = 500
   ) {
     let runCycles = 0;
-    let doCheck = async () => {
+    const doCheck = async () => {
       if (runCycles < cyclesArg) {
         runCycles++;
         try {
-          let myRecordArray = await this.getRecord(recordNameArg, recordTypeArg);
-          let myRecord = myRecordArray[0].value[0];
+          const myRecordArray = await this.getRecord(recordNameArg, recordTypeArg);
+          const myRecord = myRecordArray[0].value;
           if (myRecord === expectedValue) {
             return true;
           } else {
@@ -75,67 +81,81 @@ export class Smartdns {
   /**
    * get A Dns Record
    */
-  async getRecordA(recordNameArg: string): Promise<IDnsRecord[]> {
+  public async getRecordA(recordNameArg: string): Promise<plugins.tsclass.network.IDnsRecord[]> {
     return await this.getRecord(recordNameArg, 'A');
   }
 
   /**
    * get AAAA Record
    */
-  async getRecordAAAA(recordNameArg: string) {
+  public async getRecordAAAA(recordNameArg: string) {
     return await this.getRecord(recordNameArg, 'AAAA');
   }
 
   /**
    * gets a txt record
    */
-  getRecordTxt(recordNameArg: string): Promise<IDnsRecord[]> {
-    let done = plugins.smartpromise.defer<IDnsRecord[]>();
-    plugins.dns.resolveTxt(recordNameArg, (err, recordsArg) => {
-      if (err) {
-        done.reject(err);
-        return;
-      }
-      let responseArray: IDnsRecord[] = [];
-      for (let record of recordsArg) {
-        let recordAny: any = record; // fix wrong typings
-        responseArray.push({
-          chunked: recordAny,
-          name: recordNameArg,
-          value: recordAny.join(' '),
-          type: 'TXT'
-        });
-      }
-      done.resolve(responseArray);
+  public async getRecordTxt(recordNameArg: string): Promise<plugins.tsclass.network.IDnsRecord[]> {
+    return await this.getRecord(recordNameArg, 'TXT');
+  }
+
+  public async getRecord(
+    recordNameArg: string,
+    recordTypeArg: plugins.tsclass.network.TDnsRecordType
+  ): Promise<plugins.tsclass.network.IDnsRecord[]> {
+    const requestUrl = `https://dns.google/resolve?name=${recordNameArg}&type=${recordTypeArg}&do=1`;
+    const response = await plugins.smartrequest.request(requestUrl, {
+      method: 'GET'
     });
-    return done.promise;
+    const returnArray: plugins.tsclass.network.IDnsRecord[] = []; 
+    const responseBody: IGoogleDNSHTTPSResponse = response.body;
+    for (const dnsEntry of responseBody.Answer) {
+      if (dnsEntry.data.startsWith('"') && dnsEntry.data.endsWith('"')) {
+        dnsEntry.data = dnsEntry.data.replace(/^"(.*)"$/, '$1');
+      }
+      if (dnsEntry.name.endsWith('.')) {
+        dnsEntry.name = dnsEntry.name.substring(0, dnsEntry.name.length - 1);
+      }
+      returnArray.push({
+        name: dnsEntry.name,
+        type: this.convertDnsTypeNumberToTypeName(dnsEntry.type),
+        dnsSecEnabled: responseBody.AD,
+        value: dnsEntry.data
+      });
+    }
+    // console.log(responseBody);
+    return returnArray;
   }
 
   /**
-   * get oridinary record
+   * gets a record using nodejs dns resolver
    */
-  getRecord(recordNameArg: string, recordTypeArg: TDnsRecordType): Promise<IDnsRecord[]> {
-    let done = plugins.smartpromise.defer<IDnsRecord[]>();
+  public async getRecordWithNodeDNS(
+    recordNameArg: string,
+    recordTypeArg: plugins.tsclass.network.TDnsRecordType
+  ): Promise<plugins.tsclass.network.IDnsRecord[]> {
+    const done = plugins.smartpromise.defer<plugins.tsclass.network.IDnsRecord[]>();
     plugins.dns.resolve(recordNameArg, recordTypeArg, (err, recordsArg) => {
       if (err) {
         done.reject(err);
         return;
       }
-      let responseArray: IDnsRecord[] = [];
-      for (let recordKey in recordsArg) {
-        responseArray.push({
+      const returnArray: plugins.tsclass.network.IDnsRecord[] = [];
+      for (const recordKey in recordsArg) {
+        returnArray.push({
           name: recordNameArg,
           value: recordsArg[recordKey],
-          type: recordTypeArg
+          type: recordTypeArg,
+          dnsSecEnabled: false
         });
       }
-      done.resolve(responseArray);
+      done.resolve(returnArray);
     });
     return done.promise;
   }
 
-  getNameServer(domainNameArg: string) {
-    const done = plugins.smartpromise.defer();
+  public async getNameServer(domainNameArg: string): Promise<string[]> {
+    const done = plugins.smartpromise.defer<string[]>();
     plugins.dns.resolveNs(domainNameArg, (err, result) => {
       if (!err) {
         done.resolve(result);
@@ -144,12 +164,16 @@ export class Smartdns {
         done.reject(err);
       }
     });
+    return await done.promise;
   }
 
   /**
    * set the DNS provider
    */
-  private _setDnsProvider(dnsProvider: TDnsProvider) {
+  public setNodeDnsProvider(dnsProvider: TDnsProvider) {
+    console.log(
+      `Warning: Setting the nodejs dns authority to ${dnsProvider}. Only do this if you know what you are doing.`
+    );
     if (dnsProvider === 'google') {
       this.dnsServerIp = '8.8.8.8';
       this.dnsServerPort = 53;
@@ -161,5 +185,18 @@ export class Smartdns {
     } else {
       throw new Error('unknown dns provider');
     }
+  }
+
+  public convertDnsTypeNameToTypeNumber (dnsTypeNameArg: string): number {
+    return this.dnsTypeMap[dnsTypeNameArg];
+  }
+
+  public convertDnsTypeNumberToTypeName (dnsTypeNumberArg: number): plugins.tsclass.network.TDnsRecordType {
+    for (const key in this.dnsTypeMap) {
+      if (this.dnsTypeMap[key] === dnsTypeNumberArg) {
+        return key as plugins.tsclass.network.TDnsRecordType;
+      }
+    };
+    return null
   }
 }

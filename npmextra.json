@@ -1,6 +1,15 @@
 {
   "gitzone": {
-    "compliance": "standard"
+    "projectType": "npm",
+    "compliance": "standard",
+    "module": {
+      "githost": {},
+      "gitscope": {},
+      "gitrepo": {},
+      "shortDescription": {},
+      "npmPackagename": {},
+      "license": {}
+    }
   },
   "npmci": {
     "npmGlobalTools": [],

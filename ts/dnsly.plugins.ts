@@ -1,5 +1,15 @@
+// node native scope
 import * as dns from 'dns';
+
+export { dns };
+
+// pushrocks scope
 import * as smartdelay from '@pushrocks/smartdelay';
 import * as smartpromise from '@pushrocks/smartpromise';
+import * as smartrequest from '@pushrocks/smartrequest';
 
-export { dns, smartdelay, smartpromise };
+export { smartdelay, smartpromise, smartrequest };
+
+import * as tsclass from '@tsclass/tsclass';
+
+export { tsclass };
