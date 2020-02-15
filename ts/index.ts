@@ -11,12 +11,10 @@ export interface IGoogleDNSHTTPSResponse {
   RA: boolean;
   AD: boolean;
   CD: boolean;
-  Question: Array< { name: string, type: number }>;
-  Answer: Array<
-    { name: string, type: number, TTL: number, data: string }
-  >,
-  Additional: [],
-  Comment: string
+  Question: Array<{ name: string; type: number }>;
+  Answer: Array<{ name: string; type: number; TTL: number; data: string }>;
+  Additional: [];
+  Comment: string;
 }
 
 /**
@@ -26,13 +24,13 @@ export class Smartdns {
   public dnsServerIp: string;
   public dnsServerPort: number;
 
-  public dnsTypeMap: {[key: string]: number} = {
+  public dnsTypeMap: { [key: string]: number } = {
     A: 1,
     AAAA: 28,
     CNAME: 5,
     MX: 15,
-    TXT: 16,
-  }
+    TXT: 16
+  };
 
   /**
    * constructor for class dnsly
@@ -107,7 +105,7 @@ export class Smartdns {
     const response = await plugins.smartrequest.request(requestUrl, {
       method: 'GET'
     });
-    const returnArray: plugins.tsclass.network.IDnsRecord[] = []; 
+    const returnArray: plugins.tsclass.network.IDnsRecord[] = [];
     const responseBody: IGoogleDNSHTTPSResponse = response.body;
     for (const dnsEntry of responseBody.Answer) {
       if (dnsEntry.data.startsWith('"') && dnsEntry.data.endsWith('"')) {
@@ -187,16 +185,18 @@ export class Smartdns {
     }
   }
 
-  public convertDnsTypeNameToTypeNumber (dnsTypeNameArg: string): number {
+  public convertDnsTypeNameToTypeNumber(dnsTypeNameArg: string): number {
     return this.dnsTypeMap[dnsTypeNameArg];
   }
 
-  public convertDnsTypeNumberToTypeName (dnsTypeNumberArg: number): plugins.tsclass.network.TDnsRecordType {
+  public convertDnsTypeNumberToTypeName(
+    dnsTypeNumberArg: number
+  ): plugins.tsclass.network.TDnsRecordType {
     for (const key in this.dnsTypeMap) {
       if (this.dnsTypeMap[key] === dnsTypeNumberArg) {
         return key as plugins.tsclass.network.TDnsRecordType;
       }
-    };
-    return null
+    }
+    return null;
   }
 }

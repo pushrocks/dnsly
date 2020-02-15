@@ -1,14 +1,13 @@
 {
   "gitzone": {
     "projectType": "npm",
-    "compliance": "standard",
     "module": {
-      "githost": {},
-      "gitscope": {},
-      "gitrepo": {},
-      "shortDescription": {},
-      "npmPackagename": {},
-      "license": {}
+      "githost": "gitlab.com",
+      "gitscope": "pushrocks",
+      "gitrepo": "smartdns",
+      "shortDescription": "smart dns methods written in TypeScript",
+      "npmPackagename": "@pushrocks/smartdns",
+      "license": "MIT"
     }
   },
   "npmci": {

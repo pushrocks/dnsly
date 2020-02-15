@@ -71,6 +71,6 @@ tap.test('should detect dns sec', async () => {
   const result = await testDnsly.getRecordA('lossless.com');
   console.log(result[0]);
   expect(result[0].dnsSecEnabled).to.be.true;
-})
+});
 
 tap.start();
