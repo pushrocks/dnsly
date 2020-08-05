@@ -15,8 +15,8 @@ tap.test('should get an A DNS Record', async () => {
       name: 'dnsly_a.bleu.de',
       value: '127.0.0.1',
       dnsSecEnabled: false,
-      type: 'A'
-    }
+      type: 'A',
+    },
   ]);
 });
 
@@ -26,8 +26,8 @@ tap.test('should get an AAAA Record', async () => {
       name: 'dnsly_aaaa.bleu.de',
       value: '::1',
       dnsSecEnabled: false,
-      type: 'AAAA'
-    }
+      type: 'AAAA',
+    },
   ]);
 });
 
@@ -37,8 +37,8 @@ tap.test('should get a txt record', async () => {
       name: 'dnsly_txt.bleu.de',
       value: 'sometext_txt',
       type: 'TXT',
-      dnsSecEnabled: false
-    }
+      dnsSecEnabled: false,
+    },
   ]);
 });
 

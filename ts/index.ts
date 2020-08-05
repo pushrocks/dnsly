@@ -29,7 +29,7 @@ export class Smartdns {
     AAAA: 28,
     CNAME: 5,
     MX: 15,
-    TXT: 16
+    TXT: 16,
   };
 
   /**
@@ -59,7 +59,9 @@ export class Smartdns {
           const myRecordArray = await this.getRecordWithNodeDNS(recordNameArg, recordTypeArg);
           const myRecord = myRecordArray[0].value;
           if (myRecord === expectedValue) {
-            console.log(`smartdns: .checkUntilAvailable() verified that wanted >>>${recordTypeArg}<<< record exists for >>>${recordNameArg}<<< with value >>>${expectedValue}<<<`);
+            console.log(
+              `smartdns: .checkUntilAvailable() verified that wanted >>>${recordTypeArg}<<< record exists for >>>${recordNameArg}<<< with value >>>${expectedValue}<<<`
+            );
             return true;
           } else {
             await plugins.smartdelay.delayFor(intervalArg);
@@ -104,9 +106,12 @@ export class Smartdns {
     recordNameArg: string,
     recordTypeArg: plugins.tsclass.network.TDnsRecordType
   ): Promise<plugins.tsclass.network.IDnsRecord[]> {
-    const requestUrl = `https://dns.google/resolve?name=${recordNameArg}&type=${recordTypeArg}&do=1`;
+    const requestUrl = `https://cloudflare-dns.com/dns-query?name=${recordNameArg}&type=${recordTypeArg}&do=1`;
     const response = await plugins.smartrequest.request(requestUrl, {
-      method: 'GET'
+      method: 'GET',
+      headers: {
+        accept: 'application/dns-json',
+      },
     });
     const returnArray: plugins.tsclass.network.IDnsRecord[] = [];
     const responseBody: IGoogleDNSHTTPSResponse = response.body;
@@ -121,7 +126,7 @@ export class Smartdns {
         name: dnsEntry.name,
         type: this.convertDnsTypeNumberToTypeName(dnsEntry.type),
         dnsSecEnabled: responseBody.AD,
-        value: dnsEntry.data
+        value: dnsEntry.data,
       });
     }
     // console.log(responseBody);
@@ -148,7 +153,7 @@ export class Smartdns {
           name: recordNameArg,
           value: recordsArg[recordKey][0],
           type: recordTypeArg,
-          dnsSecEnabled: false
+          dnsSecEnabled: false,
         });
       }
       done.resolve(returnArray);
