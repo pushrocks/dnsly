@@ -24,8 +24,6 @@ export class Smartdns {
   public dnsServerIp: string;
   public dnsServerPort: number;
 
-  public dns2 = new plugins.dns2();
-
   public dnsTypeMap: { [key: string]: number } = {
     A: 1,
     AAAA: 28,
@@ -67,8 +65,6 @@ export class Smartdns {
             return true;
           } else {
             await plugins.smartdelay.delayFor(intervalArg);
-            // lets try backup strategy
-            const backupResult = this.dns2[`resolve${recordTypeArg}`]('google.com')
             return await doCheck();
           }
         } catch (err) {

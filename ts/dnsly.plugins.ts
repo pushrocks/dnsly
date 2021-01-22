@@ -14,9 +14,3 @@ import * as tsclass from '@tsclass/tsclass';
 
 export { tsclass };
 
-// third party scope
-import dns2 from 'dns2';
-
-export {
-  dns2
-}
