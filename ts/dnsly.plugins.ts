@@ -13,4 +13,3 @@ export { smartdelay, smartpromise, smartrequest };
 import * as tsclass from '@tsclass/tsclass';
 
 export { tsclass };
-
