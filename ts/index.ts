@@ -56,7 +56,12 @@ export class Smartdns {
       if (runCycles < cyclesArg) {
         runCycles++;
         try {
-          const myRecordArray = await this.getRecordWithNodeDNS(recordNameArg, recordTypeArg);
+          let myRecordArray: plugins.tsclass.network.IDnsRecord[];
+          if (runCycles % 2 === 0 || !plugins.dns) {
+            myRecordArray = await this.getRecord(recordNameArg, recordTypeArg);
+          } else {
+            myRecordArray = await this.getRecordWithNodeDNS(recordNameArg, recordTypeArg);
+          }
           const myRecord = myRecordArray[0].value;
           if (myRecord === expectedValue) {
             console.log(
@@ -68,6 +73,7 @@ export class Smartdns {
             return await doCheck();
           }
         } catch (err) {
+          // console.log(err);
           await plugins.smartdelay.delayFor(intervalArg);
           return await doCheck();
         }
@@ -140,7 +146,6 @@ export class Smartdns {
     recordNameArg: string,
     recordTypeArg: plugins.tsclass.network.TDnsRecordType
   ): Promise<plugins.tsclass.network.IDnsRecord[]> {
-    this.setNodeDnsProvider('cloudflare');
     const done = plugins.smartpromise.defer<plugins.tsclass.network.IDnsRecord[]>();
     plugins.dns.resolve(recordNameArg, recordTypeArg, (err, recordsArg) => {
       if (err) {
@@ -172,28 +177,6 @@ export class Smartdns {
       }
     });
     return await done.promise;
-  }
-
-  /**
-   * set the DNS provider
-   */
-  public setNodeDnsProvider(dnsProvider: TDnsProvider) {
-    if (!this.dnsServerIp) {
-      console.log(
-        `Warning: Setting the nodejs dns authority to ${dnsProvider}. Only do this if you know what you are doing.`
-      );
-    }
-    if (dnsProvider === 'google' && this.dnsServerIp !== '8.8.8.8') {
-      this.dnsServerIp = '8.8.8.8';
-      this.dnsServerPort = 53;
-      plugins.dns.setServers(['8.8.8.8', '8.8.4.4']);
-    } else if (dnsProvider === 'cloudflare' && this.dnsServerIp !== '1.1.1.1') {
-      this.dnsServerIp = '1.1.1.1';
-      this.dnsServerPort = 53;
-      plugins.dns.setServers(['1.1.1.1', '1.0.0.1']);
-    } else {
-      throw new Error('unknown dns provider');
-    }
   }
 
   public convertDnsTypeNameToTypeNumber(dnsTypeNameArg: string): number {
